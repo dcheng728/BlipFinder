@@ -90,7 +90,7 @@ free_multinest_results = pd.read_csv('./Results/FreeMultinest/free_'+file_id+'.c
 
 first_sig_event = True # Set first significant even condition to True
 
-for n in range(np.size(accel_scipy_results['ts'])):   
+for n in range(len(accel_scipy_results)):   
 
     s_id = accel_scipy_results.iat[n,0]
     results_row = accel_scipy_results.iloc[n]

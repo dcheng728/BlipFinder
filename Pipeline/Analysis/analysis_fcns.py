@@ -31,7 +31,7 @@ class blip_search():
     A class containing all functions used for mono blip searches.
     """
 
-    def __init__(self,object_type,obs_file):
+    def __init__(self,object_type,obs_file=None):
 
         """"
         Class constructor. Sets the type of lens to be searched for (currently only BH).
@@ -43,7 +43,7 @@ class blip_search():
         """
 
         # Initialize dyanmics and priors classes
-        self.dynamics = dynamics_fcns.Dynamics(obs_info = obs_file) # Initialize the Dyanmics class
+        self.dynamics = dynamics_fcns.Dynamics() if obs_file is None else dynamics_fcns.Dynamics(obs_info = obs_file) # Initialize the Dyanmics class
         self.priors = bh_prior_fcns.BH_priors() # Initialize the BH_priors class
 
     def disp_err(self,gmag): #

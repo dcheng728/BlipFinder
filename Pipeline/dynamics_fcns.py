@@ -1,5 +1,6 @@
 # A class of functions for generating stellar motion and lesning events as seen in GAIA.
 
+import os
 import numpy as np
 import pandas as pd
 import scipy.constants as const
@@ -44,7 +45,7 @@ class Dynamics():
 
 
 
-    def __init__(self, obs_info, t_ref = 2017.5):
+    def __init__(self, obs_info = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'obs_info.csv'), t_ref = 2017.5):
 
         """
         Class constructor. Sets basic astrophysical parameters for constructing events.
@@ -62,11 +63,15 @@ class Dynamics():
         """
 
         # Load file containing time and scan angle information for all observations
+        # Accepts two layouts: GOST (2 rows: times, scan angles; no header)
+        # or the original obs_info.csv (header row + time, scan angle columns)
         self.obs_info = pd.read_csv(obs_info, sep=",", header=None)
+        if self.obs_info.shape[0] != 2:
+            self.obs_info = pd.read_csv(obs_info, sep=",").T.reset_index(drop=True)
 
-        self.t_obs = (self.obs_info).loc[0].to_numpy()
+        self.t_obs = (self.obs_info).loc[0].to_numpy(dtype=float)
         self.t_plot = np.linspace(self.t_obs[0],self.t_obs[-1],100000) # Time steps for plotting [Julian years]
-        self.scan_angles = (self.obs_info).loc[1].to_numpy() #  Scan angles [rad]
+        self.scan_angles = (self.obs_info).loc[1].to_numpy(dtype=float) #  Scan angles [rad]
         self.t_ref = t_ref # Reference time for calculating displacement [Julian years]
         self.n_obs = len(self.t_obs) # number of observations
         self.earth_loc = self._earth_cart() # earth's location at time t_obs
